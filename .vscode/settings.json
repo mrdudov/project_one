@@ -1,0 +1,12 @@
+{
+    "cSpell.words": [
+        "aiofiles",
+        "asyncpg",
+        "authjwt",
+        "fastapi",
+        "pydantic",
+        "sessionmaker",
+        "sqlalchemy",
+        "sqlmodel"
+    ]
+}
