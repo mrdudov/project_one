@@ -4,13 +4,16 @@
         "asyncpg",
         "authjwt",
         "checkpw",
+        "dbapi",
         "fastapi",
         "gensalt",
         "hashpw",
         "passlib",
         "pydantic",
+        "repr",
         "sessionmaker",
         "sqlalchemy",
-        "sqlmodel"
+        "sqlmodel",
+        "sqltypes"
     ]
 }
