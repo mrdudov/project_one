@@ -31,7 +31,11 @@ async def get_foods(
     foods = result.scalars().all()
     return [
         ReturnFood(
-            id=food.id, name=food.name, description=food.description, img=food.img
+            id=food.id,
+            name=food.name,
+            price=food.price,
+            description=food.description,
+            img=food.img,
         )
         for food in foods
     ]
@@ -46,7 +50,11 @@ async def get_food(
     food = handle_db_exceptions(query)
 
     return ReturnFood(
-        id=food.id, name=food.name, description=food.description, img=food.img
+        id=food.id,
+        name=food.name,
+        price=food.price,
+        description=food.description,
+        img=food.img,
     )
 
 
