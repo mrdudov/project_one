@@ -1,26 +1,17 @@
 from typing import List
 
 
-from fastapi import Depends, APIRouter, HTTPException, Response, status
+from fastapi import Depends, APIRouter, HTTPException, Response, UploadFile, status
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 
 from app.db import get_session
 from app.foods.models import Food
 from app.foods.schemas import ReturnFood, CerateFood, FoodUpdate
+from app.tools.functions import handle_db_exceptions, save_food_img
 
 router = APIRouter(prefix="/food", tags=["food"])
-
-
-def handle_db_exceptions(query):
-    try:
-        return query.scalar_one()
-    except NoResultFound as exc:
-        raise HTTPException(status_code=404, detail=f"item not found. {exc}.")
-    except MultipleResultsFound as exc:
-        HTTPException(status_code=404, detail=f"multiple items found. {exc}.")
 
 
 @router.get("/foods")
@@ -102,6 +93,26 @@ async def patch_food(
     for key, value in food_data.items():
         setattr(db_food, key, value)
 
+    session.add(db_food)
+    await session.commit()
+    await session.refresh(db_food)
+    return db_food
+
+
+@router.post("/food-img")
+async def set_food_img(
+    food_id: int,
+    file: UploadFile,
+    session: AsyncSession = Depends(get_session),
+):
+    db_food = await session.get(Food, food_id)
+    if not db_food:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Food not found",
+        )
+    file_name = await save_food_img(file)
+    db_food.img = file_name
     session.add(db_food)
     await session.commit()
     await session.refresh(db_food)
