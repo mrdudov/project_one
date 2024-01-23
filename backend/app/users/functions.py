@@ -1,10 +1,9 @@
 import uuid
 
 import aiofiles
-from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from app.users.models import User
 from sqlalchemy.future import select
-from fastapi import HTTPException, UploadFile
+from fastapi import UploadFile
 
 
 from app.settings import SETTINGS
@@ -12,25 +11,12 @@ from app.settings import SETTINGS
 
 async def get_user_by_email(*, session, email: str):
     query = await session.execute(select(User).where(User.email == email))
-    return handle_db_exceptions(query)
+    return query.scalar_one()
 
 
 async def get_user_by_id(*, session, id: int):
     query = await session.execute(select(User).where(User.id == id))
-    return handle_db_exceptions(query)
-
-
-def handle_db_exceptions(query):
-    try:
-        return query.scalar_one()
-    except NoResultFound as exc:
-        raise HTTPException(
-            status_code=404, detail=f"auth error user not found. {exc}."
-        )
-    except MultipleResultsFound as exc:
-        HTTPException(
-            status_code=404, detail=f"auth error multiple users found. {exc}."
-        )
+    return query.scalar_one()
 
 
 def get_user_claims(user) -> dict:
@@ -38,7 +24,7 @@ def get_user_claims(user) -> dict:
 
 
 async def save_profile_img(file: UploadFile) -> str:
-    file_ext = file.filename.split('.')[-1]
+    file_ext = file.filename.split(".")[-1]
     file_name = f"{uuid.uuid4()}.{file_ext}"
     await save_file(file=file, file_name=f"{SETTINGS.user_profile_img}/{file_name}")
     return file_name

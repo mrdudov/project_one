@@ -17,16 +17,11 @@ router = APIRouter(prefix="/users", tags=["users"])
 async def get_users(session: AsyncSession = Depends(get_session)) -> List[ReturnUser]:
     result = await session.execute(select(User))
     users = result.scalars().all()
-    return [
-        ReturnUser(id=user.id, email=user.email, profile_img=user.profile_img)
-        for user in users
-    ]
+    return users
 
 
 @router.get("/user")
 async def get_users(
     user_id: int, session: AsyncSession = Depends(get_session)
 ) -> ReturnUser:
-    user = await get_user_by_id(session=session, id=user_id)
-
-    return ReturnUser(id=user.id, email=user.email, profile_img=user.profile_img)
+    return await get_user_by_id(session=session, id=user_id)

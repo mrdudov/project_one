@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db import get_session
 from app.categories.models import Category
 from app.categories.schemas import ReturnCategory, CerateCategory, CategoryUpdate
-from app.tools.functions import handle_db_exceptions
+
 
 router = APIRouter(prefix="/category", tags=["category"])
 
@@ -20,14 +20,7 @@ async def get_categories(
 ) -> List[ReturnCategory]:
     result = await session.execute(select(Category))
     categories = result.scalars().all()
-    return [
-        ReturnCategory(
-            id=category.id,
-            name=category.name,
-            description=category.description,
-        )
-        for category in categories
-    ]
+    return categories
 
 
 @router.get("/categories/{category_id}")
@@ -36,13 +29,7 @@ async def get_category(
     session: AsyncSession = Depends(get_session),
 ) -> ReturnCategory:
     query = await session.execute(select(Category).where(Category.id == category_id))
-    category = handle_db_exceptions(query)
-
-    return ReturnCategory(
-        id=category.id,
-        name=category.name,
-        description=category.description,
-    )
+    return query.scalar_one()
 
 
 @router.post("/categories")
@@ -93,4 +80,3 @@ async def patch_category(
     await session.commit()
     await session.refresh(db_category)
     return db_category
-

@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db import get_session
 from app.restaurants.models import Restaurant
 from app.restaurants.schemas import ReturnRestaurant, CerateRestaurant, RestaurantUpdate
-from app.tools.functions import handle_db_exceptions
+
 
 router = APIRouter(prefix="/restaurant", tags=["restaurant"])
 
@@ -20,17 +20,7 @@ async def get_restaurants(
 ) -> List[ReturnRestaurant]:
     result = await session.execute(select(Restaurant))
     restaurants = result.scalars().all()
-    return [
-        ReturnRestaurant(
-            id=restaurant.id,
-            name=restaurant.name,
-            description=restaurant.description,
-            address=restaurant.address,
-            longitude=restaurant.longitude,
-            latitude=restaurant.latitude,
-        )
-        for restaurant in restaurants
-    ]
+    return restaurants
 
 
 @router.get("/restaurants/{restaurant_id}")
@@ -41,16 +31,7 @@ async def get_restaurant(
     query = await session.execute(
         select(Restaurant).where(Restaurant.id == restaurant_id)
     )
-    restaurant = handle_db_exceptions(query)
-
-    return ReturnRestaurant(
-        id=restaurant.id,
-        name=restaurant.name,
-        description=restaurant.description,
-        address=restaurant.address,
-        longitude=restaurant.longitude,
-        latitude=restaurant.latitude,
-    )
+    return query.scalar_one()
 
 
 @router.post("/restaurants")

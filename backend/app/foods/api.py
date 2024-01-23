@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db import get_session
 from app.foods.models import Food
 from app.foods.schemas import ReturnFood, CerateFood, FoodUpdate
-from app.tools.functions import handle_db_exceptions, save_food_img
+from app.tools.functions import save_food_img
 
 router = APIRouter(prefix="/food", tags=["food"])
 
@@ -20,16 +20,7 @@ async def get_foods(
 ) -> List[ReturnFood]:
     result = await session.execute(select(Food))
     foods = result.scalars().all()
-    return [
-        ReturnFood(
-            id=food.id,
-            name=food.name,
-            price=food.price,
-            description=food.description,
-            img=food.img,
-        )
-        for food in foods
-    ]
+    return foods
 
 
 @router.get("/foods/{food_id}")
@@ -38,15 +29,8 @@ async def get_food(
     session: AsyncSession = Depends(get_session),
 ) -> ReturnFood:
     query = await session.execute(select(Food).where(Food.id == food_id))
-    food = handle_db_exceptions(query)
 
-    return ReturnFood(
-        id=food.id,
-        name=food.name,
-        price=food.price,
-        description=food.description,
-        img=food.img,
-    )
+    return query.scalar_one()
 
 
 @router.post("/foods")
