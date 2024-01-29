@@ -8,6 +8,7 @@
         "fastapi",
         "gensalt",
         "hashpw",
+        "mrdudov",
         "passlib",
         "pydantic",
         "repr",
