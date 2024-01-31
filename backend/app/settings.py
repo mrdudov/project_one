@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     POSTGRES_HOST: str
 
     food_img_path: str
+    user_profile_img_path: str
 
     class Config:
         env_file = ".env"
