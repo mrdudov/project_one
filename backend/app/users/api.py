@@ -10,7 +10,7 @@ from app.users.schemas import ReturnUser, CreateUser, UpdateUser
 from app.users.functions import save_user_profile_img
 
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(prefix="/user", tags=["user"])
 
 
 @router.get("/users")
