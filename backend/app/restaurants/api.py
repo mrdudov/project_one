@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import get_session
 from app.restaurants.models import Restaurant
-from app.restaurants.schemas import ReturnRestaurant, CerateRestaurant, RestaurantUpdate
+from app.restaurants.schemas import ReturnRestaurant, CreateRestaurant, RestaurantUpdate
 
 
 router = APIRouter(prefix="/restaurant", tags=["restaurant"])
@@ -36,7 +36,7 @@ async def get_restaurant(
 
 @router.post("/restaurants")
 async def create_restaurant(
-    restaurant: CerateRestaurant,
+    restaurant: CreateRestaurant,
     session: AsyncSession = Depends(get_session),
 ) -> ReturnRestaurant:
     new_restaurant = Restaurant(**restaurant.model_dump())

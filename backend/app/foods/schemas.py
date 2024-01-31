@@ -4,7 +4,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class CerateFood(BaseModel):
+class CreateFood(BaseModel):
     name: str
     price: Decimal
     description: str

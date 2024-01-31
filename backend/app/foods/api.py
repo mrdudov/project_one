@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import get_session
 from app.foods.models import Food
-from app.foods.schemas import ReturnFood, CerateFood, FoodUpdate
+from app.foods.schemas import ReturnFood, CreateFood, FoodUpdate
 from app.tools.functions import save_food_img
 
 router = APIRouter(prefix="/food", tags=["food"])
@@ -35,7 +35,7 @@ async def get_food(
 
 @router.post("/foods")
 async def create_food(
-    food: CerateFood,
+    food: CreateFood,
     session: AsyncSession = Depends(get_session),
 ) -> ReturnFood:
     new_food = Food(**food.model_dump())

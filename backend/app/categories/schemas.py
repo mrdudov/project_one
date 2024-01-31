@@ -2,7 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class CerateCategory(BaseModel):
+class CreateCategory(BaseModel):
     name: str
     description: str
 

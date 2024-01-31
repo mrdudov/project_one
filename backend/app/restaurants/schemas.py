@@ -2,7 +2,7 @@ from typing import Optional
 from pydantic import BaseModel
 
 
-class CerateRestaurant(BaseModel):
+class CreateRestaurant(BaseModel):
     name: str
     description: str
     address: Optional[str] = None

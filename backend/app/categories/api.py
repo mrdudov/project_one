@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db import get_session
 from app.categories.models import Category
-from app.categories.schemas import ReturnCategory, CerateCategory, CategoryUpdate
+from app.categories.schemas import ReturnCategory, CreateCategory, CategoryUpdate
 
 
 router = APIRouter(prefix="/category", tags=["category"])
@@ -34,7 +34,7 @@ async def get_category(
 
 @router.post("/categories")
 async def create_category(
-    category: CerateCategory,
+    category: CreateCategory,
     session: AsyncSession = Depends(get_session),
 ) -> ReturnCategory:
     new_category = Category(**category.model_dump())
